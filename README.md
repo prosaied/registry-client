@@ -1,1 +1,1 @@
-# registry-client
+# Docker Registry Client
