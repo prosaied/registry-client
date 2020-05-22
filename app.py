@@ -1,4 +1,7 @@
 from libs.RegistryClient import RegistryClient
 
-regclient = RegistryClient('www.google.com', 'v2')
-regclient.show_configuration()
+regclient = RegistryClient('demo-registry.digikala.com', 'v2')
+
+print(regclient.repositories())
+print(regclient.repository_tags('supernova/admin'))
+# regclient.delete_tag_id('supernova/admin','nginx-7')
