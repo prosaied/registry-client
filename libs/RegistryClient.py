@@ -26,6 +26,10 @@ class RegistryClient:
         if response.status_code == 202:
             return f"{tag_id} from repository: '{repository}' was deleted."
 
+    def tags_details(self, repository, tags):
+        print(repository)
+        print(tags)
+
     def delete_tag_time(self):
         pass
 
