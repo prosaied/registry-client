@@ -6,7 +6,7 @@ class RegistryClient:
     def __init__(self, api_url, api_version):
         self.API_ENDPOINT = f"http://{api_url}/{api_version}/"
 
-    def configuration(self):
+    def show_configuration(self):
         return self.API_ENDPOINT
 
     def repositories(self):
@@ -17,20 +17,20 @@ class RegistryClient:
         response = requests.get(f"{self.API_ENDPOINT}/{repository}/tags/list")
         return response.json()['tags']
 
-    def delete_tag_id(self, repository, tag_id):
-        response = requests.get(f"{self.API_ENDPOINT}/{repository}/manifests/{tag_id}")
+    def tag_detail(self, repository, tag_name):
+        response = requests.get(f"{self.API_ENDPOINT}/{repository}/manifests/{tag_name}")
+        return json.dumps(response.json(), indent=2)
+
+    def delete_tag_by_name(self, repository, tag_name):
+        response = requests.get(f"{self.API_ENDPOINT}/{repository}/manifests/{tag_name}")
         tag_digest = json.loads(response.content.decode('utf-8'))["fsLayers"][0]["blobSum"]
-        response = requests.get(f"{self.API_ENDPOINT}/{repository}/manifests/{tag_id}", headers={"Authorization": "Basic <" + tag_digest + ">", "Accept": "application/vnd.docker.distribution.manifest.v2+json"})
+        response = requests.get(f"{self.API_ENDPOINT}/{repository}/manifests/{tag_name}", headers={"Authorization": "Basic <" + tag_digest + ">", "Accept": "application/vnd.docker.distribution.manifest.v2+json"})
         tag_content_digest = response.headers["Docker-Content-Digest"]
         response = requests.delete(f"{self.API_ENDPOINT}/{repository}/manifests/{tag_content_digest}")
         if response.status_code == 202:
-            return f"{tag_id} from repository: '{repository}' was deleted."
+            return f"{tag_name} from repository: '{repository}' was deleted."
 
-    def tags_details(self, repository, tags):
-        print(repository)
-        print(tags)
-
-    def delete_tag_time(self):
+    def delete_tag_by_time(self):
         pass
 
     def purge_repository(self):
