@@ -23,4 +23,8 @@ regclient = RegistryClient('demo-registry.digikala.com', 'v2')
 
 # print(regclient.repositories())
 # print(regclient.repository_tags('image-cleaner'))
-print(regclient.tag_detail('image-cleaner', 'stable-3'))
+# print(regclient.tag_detail('image-cleaner', 'stable-3'))
+
+# print(regclient.search_tag('image-cleaner', ''))
+# regclient.purge_repository('image-cleaner')
+

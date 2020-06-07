@@ -21,7 +21,10 @@ class RegistryClient:
         response = requests.get(f"{self.API_ENDPOINT}/{repository}/manifests/{tag_name}")
         return json.dumps(response.json(), indent=2)
 
-    def delete_tag_by_name(self, repository, tag_name):
+    def tag_creation_time(self, repository, tag_name):
+        pass
+
+    def delete_tag(self, repository, tag_name):
         response = requests.get(f"{self.API_ENDPOINT}/{repository}/manifests/{tag_name}")
         tag_digest = json.loads(response.content.decode('utf-8'))["fsLayers"][0]["blobSum"]
         response = requests.get(f"{self.API_ENDPOINT}/{repository}/manifests/{tag_name}", headers={"Authorization": "Basic <" + tag_digest + ">", "Accept": "application/vnd.docker.distribution.manifest.v2+json"})
@@ -30,11 +33,15 @@ class RegistryClient:
         if response.status_code == 202:
             return f"{tag_name} from repository: '{repository}' was deleted."
 
-    def delete_tag_by_time(self):
-        pass
+    def search_tag(self, repository, tags_like):
+        all_tags = self.repository_tags(repository)
+        expression_result = [tag for tag in all_tags if tags_like in tag]
+        return expression_result
 
-    def purge_repository(self):
-        pass
+    def purge_repository(self, repository):
+        for tag_name in self.repository_tags(repository):
+            self.delete_tag(repository, tag_name)
 
-    def cleanup(self):
-        pass
+    def purge_registry(self):
+        for repository in self.repositories():
+            self.purge_repository(repository)
