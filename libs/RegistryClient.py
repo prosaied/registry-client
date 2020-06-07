@@ -33,7 +33,7 @@ class RegistryClient:
         if response.status_code == 202:
             return f"{tag_name} from repository: '{repository}' was deleted."
 
-    def search_tag(self, repository, tags_like):
+    def search_tag(self, repository, tags_like='', tag_time='', tag_count=''):
         all_tags = self.repository_tags(repository)
         expression_result = [tag for tag in all_tags if tags_like in tag]
         return expression_result
