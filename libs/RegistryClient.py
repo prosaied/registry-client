@@ -22,7 +22,9 @@ class RegistryClient:
         return json.dumps(response.json(), indent=2)
 
     def tag_creation_time(self, repository, tag_name):
-        pass
+        response = requests.get(f"{self.API_ENDPOINT}/{repository}/manifests/{tag_name}")
+        tag_manifest = json.loads(response.content.decode('utf-8'))
+        return json.loads(tag_manifest["history"][0]["v1Compatibility"])["created"]
 
     def delete_tag(self, repository, tag_name):
         response = requests.get(f"{self.API_ENDPOINT}/{repository}/manifests/{tag_name}")
@@ -33,10 +35,25 @@ class RegistryClient:
         if response.status_code == 202:
             return f"{tag_name} from repository: '{repository}' was deleted."
 
-    def search_tag(self, repository, tags_like='', tag_time='', tag_count=''):
-        all_tags = self.repository_tags(repository)
-        expression_result = [tag for tag in all_tags if tags_like in tag]
-        return expression_result
+    def search_tag(self, repository, tag_like=None, tag_time=None, tag_count=None):
+        if (tag_like or tag_time or tag_count) is None:
+            return "At lease one argument must be passed"
+        else:
+            all_tags = self.repository_tags(repository)
+            result = {}
+            # if tag_like is None:
+            #     pass
+            # else:
+            #     result = [tag for tag in all_tags if tag_like in tag]
+            # if tag_time is None:
+            #     pass
+            # else:
+            #     print('jiij')
+            # if tag_count is None:
+            #     pass
+            # else:
+            #     print('jiij')
+            return result
 
     def purge_repository(self, repository):
         for tag_name in self.repository_tags(repository):
