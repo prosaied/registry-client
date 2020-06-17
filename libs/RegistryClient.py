@@ -37,17 +37,19 @@ class RegistryClient:
 
     def search_tag(self, repository, tag_like=None, tag_time=None, tag_count=None):
         if (tag_like or tag_time or tag_count) is None:
-            return "At lease one argument must be passed"
+            return self.repository_tags(repository)
         else:
             all_tags = self.repository_tags(repository)
             result = {}
-            # if tag_like is None:
-            #     pass
-            # else:
-            #     result = [tag for tag in all_tags if tag_like in tag]
-            # if tag_time is None:
-            #     pass
-            # else:
+            if tag_like is None:
+                pass
+            else:
+                tmp = [tag for tag in all_tags if tag_like in tag]
+                for tag_name in tmp:
+                    result[tag_name] = self.tag_creation_time(repository, tag_name)
+            if tag_time is None:
+                pass
+            else:
             #     print('jiij')
             # if tag_count is None:
             #     pass
