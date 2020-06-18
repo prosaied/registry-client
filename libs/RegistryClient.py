@@ -61,14 +61,12 @@ class RegistryClient:
                 pass
             else:
                 tmp = {}
-                sorted_tags = sorted(result.items(), key=lambda x: x[1], reverse=True)
-                print(sorted_tags)
-                print(sorted_tags[:])
-                # for tag in sorted_tags:
-                #     tmp[tag[0]] = tag[1]
+                sorted_not_to_keep = sorted(result.items(), key=lambda x: x[1], reverse=True)[tag_keep:]
+                for tag in sorted_not_to_keep:
+                    tmp[tag[0]] = tag[1]
+                result = tmp
+            return result
 
-
-            # return result
 
     def purge_repository(self, repository):
         for tag_name in self.repository_tags(repository):
