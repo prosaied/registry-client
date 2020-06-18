@@ -35,27 +35,40 @@ class RegistryClient:
         if response.status_code == 202:
             return f"{tag_name} from repository: '{repository}' was deleted."
 
-    def search_tag(self, repository, tag_like=None, tag_time=None, tag_count=None):
+    def search_tag(self, repository, tag_like=None, tag_time=None, tag_keep=None):
+        result = {}
+        all_tags = self.repository_tags(repository)
+        tmp = [tag for tag in all_tags]
+        for tag_name in tmp:
+            result[tag_name] = self.tag_creation_time(repository, tag_name)
+
         if (tag_like or tag_time or tag_count) is None:
-            return self.repository_tags(repository)
+            return result
         else:
-            all_tags = self.repository_tags(repository)
-            result = {}
             if tag_like is None:
                 pass
             else:
-                tmp = [tag for tag in all_tags if tag_like in tag]
-                for tag_name in tmp:
-                    result[tag_name] = self.tag_creation_time(repository, tag_name)
+                result = {key: value for (key, value) in result.items() if tag_like in key}
             if tag_time is None:
                 pass
             else:
-            #     print('jiij')
-            # if tag_count is None:
-            #     pass
-            # else:
-            #     print('jiij')
-            return result
+                tmp = {}
+                for key in result:
+                    if tag_time > result[key][0:19]:
+                        tmp[key] = result[key][0:19]
+                result = tmp
+            if tag_keep is None:
+                pass
+            else:
+                tmp = {}
+                sorted_tags = sorted(result.items(), key=lambda x: x[1], reverse=True)
+                print(sorted_tags)
+                print(sorted_tags[:])
+                # for tag in sorted_tags:
+                #     tmp[tag[0]] = tag[1]
+
+
+            # return result
 
     def purge_repository(self, repository):
         for tag_name in self.repository_tags(repository):
