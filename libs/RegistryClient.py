@@ -42,7 +42,7 @@ class RegistryClient:
         for tag_name in tmp:
             result[tag_name] = self.tag_creation_time(repository, tag_name)
 
-        if (tag_like or tag_time or tag_count) is None:
+        if (tag_like or tag_time or tag_keep) is None:
             return result
         else:
             if tag_like is None:
@@ -66,7 +66,6 @@ class RegistryClient:
                     tmp[tag[0]] = tag[1]
                 result = tmp
             return result
-
 
     def purge_repository(self, repository):
         for tag_name in self.repository_tags(repository):
