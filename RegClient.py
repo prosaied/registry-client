@@ -42,16 +42,22 @@ def Show_Image_Details(repository, image_name):
 def Show_Image_Creation_Time(repository, image_name):
     print(regclient.tag_creation_time(repository, image_name)[0:19])
 
-# @RegClient.command()
-# @click.option('-r', '--repository', required=True)
-# @click.option('-i', '--image_name', required=True)
-# def Delete_Image(repository, image_name):
-#     regclient.delete_tag(repository, image_name)
+@RegClient.command()
+@click.option('-r', '--repository', required=True)
+@click.option('-e', '--image_expression', required=False)
+@click.option('-o', '--image_older_than', required=False)
+@click.option('-k', '--image_keep_count', required=False)
+def Delete_Image(repository, image_expression, image_older_than, image_keep_count):
+    print(f"These images are going to be deleted: ")
+    images_list = regclient.search_tag(repository, image_expression, image_older_than, image_keep_count)
+    pprint(images_list)
+    for image_name in images_list.keys():
+        regclient.delete_tag(repository, image_name)
 
 @RegClient.command()
 @click.option('-r', '--repository', required=True)
 def Purge_Repository(repository):
-    regclient.purge_repository(repository)
+    print(regclient.purge_repository(repository))
 
 
 @RegClient.command()
